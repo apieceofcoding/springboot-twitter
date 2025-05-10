@@ -1,14 +1,30 @@
 package com.apiece.springboottwitter;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
-public record Post(
-        Long id,
-        String content,
-        LocalDateTime createdAt
-) {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "posts")
+@Entity
+public class Post {
 
-    public Post updateContent(String content) {
-        return new Post(this.id, content, this.createdAt);
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String content;
+
+    private LocalDateTime createdAt;
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 }
