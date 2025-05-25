@@ -1,4 +1,4 @@
-package com.apiece.springboottwitter.post;
+package com.apiece.springboottwitter.comment;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,35 +6,30 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Table(name = "posts")
+@Table(name = "comments")
 @Entity
-public class Post {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    private int commentCount;
+    @Column(nullable = false)
+    private Long postId;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     public void updateContent(String content) {
         this.content = content;
-    }
-
-    public void increaseCommentCount() {
-        this.commentCount++;
-    }
-
-    public void decreaseCommentCount() {
-        this.commentCount--;
     }
 }
