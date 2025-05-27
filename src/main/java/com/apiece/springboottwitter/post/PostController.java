@@ -1,7 +1,10 @@
-package com.apiece.springboottwitter;
+package com.apiece.springboottwitter.post;
 
-import com.apiece.springboottwitter.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +20,11 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/posts")
     public Post createPost(@RequestBody Post post) {
-        Post newPost = new Post(null, post.getContent(), LocalDateTime.now());
+        Post newPost = Post.builder()
+                .content(post.getContent())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         postRepository.save(newPost);
 
@@ -51,10 +58,17 @@ public class PostController {
     }
 
     @GetMapping("/api/posts/search")
-    public List<Post> searchPosts(
-            @RequestParam(defaultValue = "0") int page,
+    public Slice<Post> searchPosts(
+            @RequestParam(required = false) Long lastPostId,
             @RequestParam(defaultValue = "3") int size
     ) {
-        return postRepository.findAllPaged(page, size);
+        int page = 0;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        if (lastPostId == null) {
+            return postRepository.findSlicesBy(pageable);
+        } else {
+            return postRepository.findSlicesByIdLessThan(lastPostId, pageable);
+        }
     }
 }

@@ -1,10 +1,7 @@
-package com.apiece.springboottwitter;
+package com.apiece.springboottwitter.post;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "posts")
 @Entity
 public class Post {
@@ -22,9 +20,21 @@ public class Post {
 
     private String content;
 
+    private int commentCount;
+
     private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decreaseCommentCount() {
+        this.commentCount--;
     }
 }
